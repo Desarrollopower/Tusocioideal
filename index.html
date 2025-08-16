@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tu Socio Ideal - Iniciar Sesión</title>
+  <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+  <div class="fondo"></div>
+
+  <div class="contenedor">
+    <h1 class="titulo">Tu Socio Ideal</h1>
+
+    <!-- Login Form -->
+    <div id="login-form" class="formulario">
+      <input type="text" id="username" placeholder="Usuario" />
+      <div class="password-container">
+        <input type="password" id="password" placeholder="Contraseña" />
+        <span class="toggle-password">👁️</span>
+      </div>
+      <button id="btn-login">Iniciar sesión</button>
+      <p><a href="#" onclick="toggleRecover()">¿Olvidaste tu contraseña?</a></p>
+      <p>¿No tienes cuenta? <a href="#" onclick="toggleRegister()">Regístrate aquí</a></p>
+    </div>
+
+    <!-- Register Form -->
+    <div id="register-form" class="formulario oculto">
+      <input type="text" id="new-username" placeholder="Nuevo Usuario" />
+      <div class="password-container">
+        <input type="password" id="new-password" placeholder="Nueva Contraseña" />
+        <span class="toggle-password">👁️</span>
+      </div>
+      <button onclick="register()">Registrar</button>
+      <p><a href="#" onclick="toggleRegister()">¿Ya tienes cuenta? Inicia sesión</a></p>
+    </div>
+
+    <!-- Recover Form -->
+    <div id="recover-form" class="formulario oculto">
+      <input type="text" id="recover-username" placeholder="Ingresa tu usuario" />
+      <button onclick="recoverPassword()">Recuperar Contraseña</button>
+      <p><a href="#" onclick="toggleRecover()">Volver</a></p>
+    </div>
+  </div>
+
+  <script type="module" src="js/index.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
