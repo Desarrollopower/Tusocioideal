@@ -1,0 +1,125 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+body {
+  height: 100vh;
+  background: #111;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+  transition: background 0.3s ease;
+}
+
+/* Fondo animado */
+.fondo {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  animation: cambiarFondo 10s infinite alternate;
+  z-index: -1;
+  filter: brightness(0.5);
+}
+
+@keyframes cambiarFondo {
+  0% {
+    background-image: url("../img/imagen-1.jpg");
+  }
+  100% {
+    background-image: url("../img/imagen-2.jpg");
+  }
+}
+
+/* Contenedor */
+.contenedor {
+  background: rgba(0, 0, 0, 0.6);
+  padding: 40px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 400px;
+  text-align: center;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+  animation: fadeIn 1.2s ease;
+}
+
+.titulo {
+  margin-bottom: 20px;
+  font-size: 28px;
+}
+
+.formulario input {
+  display: block;
+  width: 100%;
+  margin-bottom: 15px;
+  padding: 12px;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+}
+
+.formulario button {
+  width: 100%;
+  padding: 12px;
+  background-color: #0d6efd;
+  border: none;
+  color: white;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.formulario button:hover {
+  background-color: #0b5ed7;
+}
+
+.formulario p {
+  margin-top: 10px;
+}
+
+a {
+  color: #0d99ff;
+  text-decoration: none;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.oculto {
+  display: none;
+}
+
+@keyframes fadeIn {
+  from { transform: translateY(-30px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* Password container con icono */
+.password-container {
+  position: relative;
+}
+
+.password-container input {
+  width: 100%;
+  padding-right: 40px;
+}
+
+.toggle-password {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 18px;
+  color: #aaa;
+}
+
