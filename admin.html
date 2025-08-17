@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tu Socio Ideal - Admin</title>
+  <link rel="stylesheet" href="styles.css" />
+<script type="module" src="js/firebase-config.js"></script>
+<script src="js/utils.js" defer></script>
+<script type="module" src="js/inicio.js"></script>
+<script type="module" src="js/clientes.js"></script>
+<script type="module" src="js/usuarios.js"></script>
+<script type="module" src="js/adjuntos.js"></script>
+<script type="module" src="js/informes.js"></script>
+<script type="module" src="js/gestion.js"></script>
+<script type="module" src="js/configuraciones.js"></script>
+<script type="module" src="js/busqueda.js"></script>
+<script type="module" src="js/programacion.js"></script>
+<script type="module" src="js/facturacion.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="data.js" defer></script>
+</head>
+<body>
+  <div class="sidebar" id="sidebar">
+  <button id="toggleSidebar">≡</button>
+  <h2 class="logo-text">Tu Socio Ideal</h2>
+  <ul class="menu">
+    <li onclick="showSection('inicio')"><i class="icon">🏠</i><span class="text">Inicio</span></li>
+    <li onclick="showSection('clientes')"><i class="icon">👥</i><span class="text">Clientes</span></li>
+    <li onclick="showSection('informes')"><i class="icon">📊</i><span class="text">Informes</span></li>
+    <li onclick="showSection('adjuntos')"><i class="icon">📎</i><span class="text">Adjuntos</span></li>
+    <li onclick="showSection('planilla-facturacion')"><i class="icon">📑</i><span class="text">Facturación</span></li>
+    <li onclick="showSection('gestion')"><i class="icon">📆</i><span class="text">Gestión de Citas</span></li>
+    <li onclick="showSection('programacion')"><i class="icon">🗓️</i><span class="text">Programación</span></li>
+    <li onclick="showSection('usuarios')"><i class="icon">👤</i><span class="text">Usuarios</span></li>
+    <li onclick="showSection('configuraciones')"><i class="icon">⚙️</i><span class="text">Config</span></li>
+    <li onclick="showSection('buscar-cliente')"><i class="icon">🔍</i><span class="text">Buscar</span></li>
+  </ul>
+</div>
+
+  <main>
+  <section id="inicio" class="inicio">
+  <h2>👋 ¡Bienvenido, <span id="nombre-admin">Admin</span>!</h2>
+
+  <div class="tarjetas-inicio">
+    <div class="card-info">
+      <h3>👥 Clientes</h3>
+      <p id="total-clientes" class="valor">0</p>
+      <canvas id="grafico-clientes" height="80"></canvas>
+    </div>
+    <div class="card-info">
+      <h3>📆 Citas hoy</h3>
+      <p id="total-citas" class="valor">0</p>
+      <canvas id="grafico-citas" height="80"></canvas>
+    </div>
+    <div class="card-info">
+      <h3>💳 Facturas pendientes</h3>
+      <p id="total-facturas" class="valor">0</p>
+      <canvas id="grafico-facturas" height="80"></canvas>
+    </div>
+    <div class="card-info">
+      <h3>📎 Adjuntos</h3>
+      <p id="total-adjuntos" class="valor">0</p>
+      <canvas id="grafico-adjuntos" height="80"></canvas>
+    </div>
+  </div>
+
+  <div class="ultimas-acciones">
+    <h3>📋 Últimas acciones</h3>
+    <ul id="ultimas-acciones-list">
+    <!-- Aquí se cargan últimas acciones -->
+    </ul>
+  </div>
+
+  <div class="accesos-rapidos">
+    <h3>⚡ Accesos rápidos</h3>
+    <button onclick="showSection('clientes')">Ir a Clientes</button>
+    <button onclick="showSection('gestion')">Ir a Gestión de Citas</button>
+    <button onclick="showSection('adjuntos')">Ver Adjuntos</button>
+  </div>
+</section>
+
+    <section id="clientes" class="hidden">
+  <h2>Registrar Nuevo Cliente</h2>
+  <form>
+    <input type="text" placeholder="Nombre completo" required />
+    <input type="email" placeholder="Correo electrónico" required />
+    <input type="text" placeholder="Teléfono" required />
+    <input type="text" placeholder="Nombre de la empresa" required />
+    <input type="text" placeholder="NIT de la empresa" required />
+    <input type="text" placeholder="Dirección" />
+    <button type="submit">Registrar</button>
+  </form>
+</section>
+
+    <section id="informes" class="hidden">
+  <h2 class="titulo-informes">📁 Informes Administrativos</h2>
+
+  <div class="contenedor-informes">
+    <div class="formulario-informes">
+      <label>👤 Cliente:</label>
+      <select id="clientes-informes">
+        <option value="">-- Selecciona un cliente --</option>
+      </select>
+
+      <label>📅 Fecha:</label>
+      <input type="date" id="filtrar-fecha-informe" />
+
+      <button id="btn-generar-informe">🔍 Generar Informe</button>
+    </div>
+
+    <div id="resultado-informes" class="resultados-informes">
+      <p class="info">Aún no se ha generado ningún informe.</p>
+    </div>
+  </div>
+</section>
+
+    <section id="adjuntos" class="hidden">
+  <h2>📎 Subir Archivos por Cliente</h2>
+
+  <label for="cliente-select">Seleccionar cliente:</label>
+  <select id="clientes-adjuntos"></select>
+
+  <label for="archivo">Seleccionar archivo:</label>
+  <input type="file" id="archivo" accept=".pdf,.xls,.xlsx">
+
+  <label for="descripcion-archivo">Detalles del archivo:</label>
+  <textarea id="descripcion-archivo" placeholder="Ej: Informe de avance, cotización..."></textarea>
+
+  <!-- ✅ Agrego id al botón -->
+  <button id="btn-subir-archivo">📤 Subir Archivo</button>
+
+  <p id="mensaje-subida" class="mensaje"></p>
+</section>
+
+    <section id="gestion" class="hidden">
+  <h2>Registrar Gestión</h2>
+  <form id="form-cita">
+    <label for="select-clientes">Cliente:</label>
+    <select id="select-clientes" required>
+      <option value="">-- Selecciona un cliente --</option>
+    </select>
+
+    <label for="fecha-cita">Fecha y Hora:</label>
+    <input id="fecha-cita" type="datetime-local" required />
+
+    <label for="motivo-cita">Motivo de la gestión:</label>
+    <textarea id="motivo-cita" required placeholder="¿Por qué se va a hacer la cita?"></textarea>
+
+    <label for="detalle-ayuda">Detalle de la ayuda necesaria:</label>
+    <textarea id="detalle-ayuda" required placeholder="Describe cómo ayudaremos al cliente"></textarea>
+
+    <button type="submit">Guardar Gestión</button>
+  </form>
+
+  <div id="mensaje"></div>
+  <div id="lista-gestiones"></div>
+</section>
+
+<!-- Toast para mensajes -->
+<div id="toast" class="toast"></div>
+
+<section id="planilla-facturacion" class="hidden">
+  <h2>📑 Planilla de Facturación</h2>
+
+  <!-- Formulario para agregar factura -->
+  <form id="form-factura">
+    <label for="factura-cliente">Cliente:</label>
+    <select id="factura-cliente" required></select>
+
+    <label for="factura-empresa">Empresa:</label>
+    <input type="text" id="factura-empresa" placeholder="Empresa del cliente" readonly />
+
+    <label for="factura-fecha">Fecha de Facturación:</label>
+    <input type="date" id="factura-fecha" required />
+
+    <label for="factura-fecha-limite">Fecha Límite de Pago:</label>
+    <input type="date" id="factura-limite" placeholder="Fecha límite de pago" required />
+
+    <label for="factura-servicio">Servicios Prestados:</label>
+    <input type="text" id="factura-servicio" placeholder="Ej: Desarrollo Web" required />
+
+    <label for="factura-valor">Valor Unitario:</label>
+    <input type="number" id="factura-valor" placeholder="Ej: 100000" required />
+
+    <label for="factura-total">Valor Total:</label>
+    <input type="number" id="factura-total" placeholder="Ej: 150000" required />
+
+    <label for="factura-estado">Estado de Pago:</label>
+    <select id="factura-estado" required>
+      <option value="pendiente">⏳ Pendiente</option>
+      <option value="pagado">✅ Pagado</option>
+    </select>
+
+    <button type="submit">💾 Guardar Factura</button>
+  </form>
+
+  <!-- Filtros encima de la tabla -->
+  <div class="filtros-factura">
+    <h3>🔍 Filtrar Facturas</h3>
+    <input type="date" id="filtro-fecha" />
+    
+    <select id="filtro-estado">
+      <option value="">-- Estado --</option>
+      <option value="pendiente">⏳ Pendiente</option>
+      <option value="pagado">✅ Pagado</option>
+    </select>
+
+    <button id="filtro-buscar">🔍 Aplicar</button>
+    <button id="filtro-limpiar">♻️ Limpiar</button>
+  </div>
+
+  <!-- Tabla de facturas -->
+  <table id="tabla-facturas">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Cliente</th>
+        <th>Empresa</th>
+        <th>Fecha</th>
+        <th>Fecha Límite</th>
+        <th>Servicio</th>
+        <th>Valor</th>
+        <th>Total</th>
+        <th>Estado</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Se llena con facturacion.js -->
+    </tbody>
+  </table>
+
+  <div style="margin-top: 20px;">
+    <button onclick="exportarFacturasExcel()">📤 Exportar a Excel</button>
+  </div>
+</section>
+
+<!-- Sección Agenda -->
+<section id="programacion" class="hidden">
+  <h2>📅 Agenda Semanal</h2>
+  <p id="resumen-citas">Total de citas: 0</p>
+
+  <!-- Barra de control -->
+  <div class="agenda-controles">
+    <button id="btn-prev-mes">◀ Mes anterior</button>
+    <span id="mes-actual">Mes actual</span>
+    <button id="btn-next-mes">Mes siguiente ▶</button>
+    <!-- Filtro de fecha: ahora eliges la fecha inicial -->
+    <input type="date" id="fecha-inicio" /><button>Buscar</button>
+  </div>
+
+  <!-- Agenda visual -->
+  <div class="agenda">
+    <div class="agenda-header">
+      <div class="hora-vacia"></div>
+      <!-- Los días se renderizan dinámicamente desde programacion.js -->
+    </div>
+
+    <div class="agenda-body">
+      <!-- Horas y bloques se generan desde programacion.js -->
+    </div>
+  </div>
+</section>
+
+<!-- Modal para agendar / gestionar cita -->
+<div id="modal-cita" class="modal hidden">
+  <div class="modal-content">
+    
+    <!-- Botón de cierre -->
+    <span id="cerrar-modal" class="cerrar-modal">&times;</span>
+
+    <h3 id="modal-titulo">Agendar Cita</h3>
+    <p id="modal-hora"></p>
+
+    <!-- Selección de cliente -->
+    <label for="select-cliente" id="label-cliente">Cliente:</label>
+    <select id="select-cliente">
+      <option value="">-- Seleccionar cliente --</option>
+    </select>
+
+    <!-- Responsable de la reunión (nuevo) -->
+    <label for="responsable" id="label-responsable">Responsable:</label>
+    <input type="text" id="responsable" placeholder="Nombre del responsable" />
+
+    <!-- Campo para motivo de cancelación -->
+    <div id="motivo-cancelacion-container" class="hidden">
+      <label for="motivo-cancelacion">Motivo de cancelación:</label>
+      <input type="text" id="motivo-cancelacion" placeholder="Escribe el motivo..." />
+    </div>
+
+    <!-- Botones de acción -->
+    <div class="modal-botones">
+      <button id="guardar-cita" class="hidden">✅ Guardar</button>
+      <button id="btn-asistio" class="hidden">✔ Asistió</button>
+      <button id="btn-cancelar-cita" class="hidden">❌ Cancelar</button>
+      <button id="btn-bloquear" class="hidden">🔒 Bloquear</button>
+      <button id="btn-desbloquear" class="hidden">🔓 Desbloquear</button>
+    </div>
+
+  </div>
+</div>
+
+
+    <section id="usuarios" class="hidden">
+  <h2>Gestión de Usuarios</h2>
+<div class="contenedor-usuario">
+  <div class="perfil-usuario">
+    <div class="perfil-icono">👤</div>
+    <div class="perfil-nombre" id="nombre-usuario">Nombre del Cliente</div>
+  </div>
+
+  <form id="form-gestion-usuario">
+    <select id="clienteSelect"></select>
+    <input type="text" id="nombreInput" placeholder="Nombre" required />
+    <input type="text" id="empresaInput" placeholder="Nombre de la empresa" />
+    <input type="text" id="nitInput" placeholder="NIT de la empresa" />
+    <input type="email" id="correoInput" placeholder="Correo" required />
+    <input type="text" id="telefonoInput" placeholder="Teléfono" required />
+    <select id="estadoInput">
+      <option value="activo">Activo</option>
+      <option value="inactivo">Inactivo</option>
+    </select>
+
+    <button type="submit">Guardar cambios</button>
+    <button type="button" id="eliminarClienteBtn" class="btn-eliminar">Eliminar cliente</button>
+  </form>
+</div>
+</section>
+
+    <section id="configuraciones" class="configuraciones">
+  <h2>⚙️ Configuraciones del sistema</h2>
+
+  <!-- 1. Datos del perfil del admin -->
+  <div class="config-box">
+    <h3>🔧 Datos del perfil</h3>
+    <label>Usuario:</label>
+    <input type="text" id="config-usuario" placeholder="Nombre de usuario" />
+    <label>Contraseña actual:</label>
+    <input type="password" id="config-password-actual" placeholder="Ingresa tu contraseña actual" />
+
+    <label>Nueva contraseña:</label>
+    <div class="input-password">
+  <input type="password" id="config-password-nueva" placeholder="********">
+  <button type="button" onclick="togglePassword()">👁️</button>
+</div>
+
+<button onclick="guardarConfiguraciones()">💾 Guardar cambios</button>
+  </div>
+
+  <!-- 2. Preferencias del sistema -->
+  <div class="config-box">
+    <h3>🖼️ Preferencias</h3>
+    <label>Tema:</label>
+    <select id="config-tema">
+      <option value="claro">Claro</option>
+      <option value="oscuro">Oscuro</option>
+    </select>
+
+    <label>Idioma:</label>
+    <select id="config-idioma">
+      <option value="es">Español</option>
+      <option value="en">Inglés</option>
+    </select>
+
+    <label>
+      <input type="checkbox" id="config-notificaciones">
+      Activar notificaciones
+    </label>
+
+    <label>Mensaje de bienvenida:</label>
+    <textarea id="config-bienvenida" placeholder="Escribe aquí..."></textarea>
+  </div>
+
+  <!-- 3. Seguridad -->
+  <div class="config-box">
+    <h3>🔐 Seguridad</h3>
+    <button onclick="cambiarContrasena()">Cambiar contraseña</button>
+    <button onclick="cerrarSesion()">Cerrar sesión</button>
+    <p>Última sesión: <span id="ultima-sesion">-</span></p>
+  </div>
+
+  <!-- 4. Backup -->
+  <div class="config-box">
+    <h3>💾 Backup y sincronización</h3>
+    <button onclick="sincronizar()">Sincronizar manualmente</button>
+    <button onclick="exportarJSON()">Exportar en JSON</button>
+    <button onclick="exportarCSV()">Exportar en CSV</button>
+  </div>
+</section>
+
+
+    <section id="buscar-cliente" class="hidden">
+  <h2>Buscar Cliente</h2>
+  <input type="text" id="busqueda-cliente" placeholder="Buscar por nombre o empresa..." />
+
+  <table id="tabla-clientes">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Nombre</th>
+        <th>Empresa</th>
+        <th>NIT</th>
+        <th>Acción</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</section>
+
+<!-- Modal para mostrar detalles -->
+<div id="modal-cliente" class="modal-busqueda">
+  <div class="modal-contenido">
+    <span class="cerrar-modal">&times;</span>
+    <h2>Detalles del Cliente</h2>
+    <p><strong>Nombre:</strong> <span class="modal-nombre"></span></p>
+    <p><strong>Correo:</strong> <span class="modal-correo"></span></p>
+    <p><strong>Teléfono:</strong> <span class="modal-telefono"></span></p>
+    <p><strong>Dirección:</strong> <span class="modal-direccion"></span></p>
+    <p><strong>Empresa:</strong> <span class="modal-empresa"></span></p>
+    <p><strong>NIT:</strong> <span class="modal-nit"></span></p>
+  </div>
+</div>
+ 
+   <!-- Modal para editar cita -->
+<div id="modal-editar-cita" class="modal hidden">
+  <div class="modal-contenido">
+    <span class="cerrar-modal" onclick="cerrarModalEditarCita()">×</span>
+    <h2>✏️ Editar Fecha y Hora</h2>
+    <p><strong>Cliente:</strong> <span id="editar-cita-cliente"></span></p>
+    
+    <label for="editar-cita-fecha">Nueva Fecha y Hora:</label>
+    <input type="datetime-local" id="editar-cita-fecha" />
+
+    <button onclick="guardarEdicionCita()">💾 Guardar</button>
+  </div>
+</div>
+
+  <div id="toast" class="toast hidden">Mensaje de prueba</div>
+   </main>
+</body>
+</html>
+
+
+
+
