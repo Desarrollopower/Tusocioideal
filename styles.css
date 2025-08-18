@@ -1617,9 +1617,33 @@ select:focus, input[type="text"]:focus {
   box-shadow: 0 4px 20px rgba(231, 76, 60, 0.6);
 }
 
-/* ====== 🔹 MEJORAS RESPONSIVE PARA MÓVILES ====== */
+/* ====== 🔹 FIX SIDEBAR EN MÓVILES ====== */
 @media (max-width: 768px) {
-  /* Botón de menú fijo en móviles */
+  /* Sidebar oculta por defecto */
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: -220px;
+    width: 220px;
+    height: 100%;
+    background: linear-gradient(180deg, #60a87e, #4d916a);
+    transition: left 0.3s ease-in-out;
+    z-index: 1200;
+    overflow-y: auto; /* ✅ para poder hacer scroll en móviles */
+  }
+
+  /* Sidebar visible al activar .open */
+  .sidebar.open {
+    left: 0;
+  }
+
+  /* El contenido principal ocupa todo cuando sidebar está oculta */
+  main {
+    margin-left: 0 !important;
+    width: 100% !important;
+  }
+
+  /* Botón de menú siempre visible en móviles */
   #toggleSidebar {
     position: fixed;
     top: 15px;
@@ -1627,44 +1651,22 @@ select:focus, input[type="text"]:focus {
     background-color: #4d916a;
     padding: 10px 14px;
     border-radius: 8px;
-    z-index: 1100;
+    z-index: 1300;
+    font-size: 22px;
+    color: #fff;
   }
 
-  /* Sidebar deslizante */
-  .sidebar {
-    transition: left 0.3s ease;
+  /* Ajustar menú dentro de la sidebar */
+  .sidebar .menu {
+    padding: 10px;
   }
 
-  .sidebar.open {
-    left: 0;
-  }
-
-  /* Secciones más compactas */
-  section {
-    padding: 15px;
-    margin: 10px;
-    border-radius: 8px;
-  }
-
-  /* Tablas con scroll horizontal */
-  table {
-    display: block;
-    width: 100%;
-    overflow-x: auto;
+  .sidebar .menu li {
+    padding: 12px 15px;
+    margin: 6px 0;
+    font-size: 16px;
   }
 }
 
-@media (max-width: 480px) {
-  /* Texto de valores más pequeño */
-  .card-info p.valor {
-    font-size: 1.8rem;
-  }
 
-  /* Inputs más cómodos en móviles */
-  form input,
-  form select,
-  form textarea {
-    font-size: 16px; /* mejor para teclado móvil */
-  }
-}
 
