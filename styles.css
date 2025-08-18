@@ -1617,3 +1617,54 @@ select:focus, input[type="text"]:focus {
   box-shadow: 0 4px 20px rgba(231, 76, 60, 0.6);
 }
 
+/* ====== 🔹 MEJORAS RESPONSIVE PARA MÓVILES ====== */
+@media (max-width: 768px) {
+  /* Botón de menú fijo en móviles */
+  #toggleSidebar {
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    background-color: #4d916a;
+    padding: 10px 14px;
+    border-radius: 8px;
+    z-index: 1100;
+  }
+
+  /* Sidebar deslizante */
+  .sidebar {
+    transition: left 0.3s ease;
+  }
+
+  .sidebar.open {
+    left: 0;
+  }
+
+  /* Secciones más compactas */
+  section {
+    padding: 15px;
+    margin: 10px;
+    border-radius: 8px;
+  }
+
+  /* Tablas con scroll horizontal */
+  table {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Texto de valores más pequeño */
+  .card-info p.valor {
+    font-size: 1.8rem;
+  }
+
+  /* Inputs más cómodos en móviles */
+  form input,
+  form select,
+  form textarea {
+    font-size: 16px; /* mejor para teclado móvil */
+  }
+}
+
