@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="styles.css" />
 <script type="module" src="js/firebase-config.js"></script>
 <script src="js/utils.js" defer></script>
+<script src="js/sidebar.js" defer></script>
 <script type="module" src="js/inicio.js"></script>
 <script type="module" src="js/clientes.js"></script>
 <script type="module" src="js/usuarios.js"></script>
@@ -439,8 +440,31 @@
 
   <div id="toast" class="toast hidden">Mensaje de prueba</div>
    </main>
+  <script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const sidebar = document.getElementById("sidebar");
+    const toggleBtn = document.getElementById("toggleSidebar");
+
+    toggleBtn.addEventListener("click", () => {
+      sidebar.classList.toggle("open");
+    });
+
+    // ✅ Si haces clic fuera de la sidebar en móvil, se cierra
+    document.addEventListener("click", (e) => {
+      if (
+        window.innerWidth <= 768 &&
+        sidebar.classList.contains("open") &&
+        !sidebar.contains(e.target) &&
+        e.target !== toggleBtn
+      ) {
+        sidebar.classList.remove("open");
+      }
+    });
+  });
+</script>
 </body>
 </html>
+
 
 
 
